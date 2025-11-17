@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flavor Table | وصفاتي المفضلة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <h1>Flavor Table</h1>
+            <ul>
+                <li><a href="index.html"> search for recipes</a></li>
+                <li><a href="randomRecipes.html">random recipe </a></li>
+                <li><a href="favorites.html" class="active">the favorite</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h2>my favorite saved recipes</h2>
+        
+        <div id="no-favorites-message" class="hidden">there are currently no saved recipes in the favorite list.</div>
+
+        <section id="favorites-container" class="recipe-grid">
+            </section>
+    </main>
+    
+    <script src="app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const favoritesContainer = document.getElementById('favorites-container');
+            const noFavoritesMessage = document.getElementById('no-favorites-message');
+
+            // (d) Function to remove a recipe from localStorage
+            const removeFavorite = (recipeTitle) => {
+                let favorites = JSON.parse(localStorage.getItem('favoriteRecipes')) || [];
+                
+                // Filter out the recipe to be removed
+                favorites = favorites.filter(recipe => recipe.title !== recipeTitle);
+                
+                localStorage.setItem('favoriteRecipes', JSON.stringify(favorites));
+                alert(`  recipe deleted "${recipeTitle}" from favorite .`);
+                
+                // Reload the list after removal
+                displayFavorites();
+            };
+
+            // (d) Function to display the list of favorite recipes
+            const displayFavorites = () => {
+                favoritesContainer.innerHTML = '';
+                const favorites = JSON.parse(localStorage.getItem('favoriteRecipes')) || [];
+                
+                if (favorites.length === 0) {
+                    noFavoritesMessage.classList.remove('hidden');
+                    return;
+                }
+                
+                noFavoritesMessage.classList.add('hidden');
+
+                favorites.forEach(recipe => {
+                    const card = document.createElement('div');
+                    card.className = 'recipe-card';
+                    
+                    card.innerHTML = `
+                        <img src="${recipe.image || 'placeholder.png'}" alt="${recipe.title}">
+                        <div class="card-content">
+                            <h3>${recipe.title}</h3>
+                            <p><strong>the components:</strong> ${recipe.ingredients ? recipe.ingredients.slice(0, 3).join(', ') + '...' : ' not available'}</p>
+                            
+                            <button class="remove-btn" data-title="${recipe.title}"> remove from favorite</button>
+                        </div>
+                    `;
+                    
+                    // Add event listener for Remove button
+                    card.querySelector('.remove-btn').addEventListener('click', (e) => {
+                        const titleToRemove = e.currentTarget.dataset.title;
+                        removeFavorite(titleToRemove);
+                    });
+
+                    favoritesContainer.appendChild(card);
+                });
+            };
+
+            // Load and display favorites on page load
+            displayFavorites();
+        });
+    </script>
+</body>
+</html>

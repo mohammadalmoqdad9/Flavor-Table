@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flavor Table | وصفة عشوائية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <h1>Flavor Table</h1>
+            <ul>
+                <li><a href="index.html"> search for recipes</a></li>
+                <li><a href="randomRecipes.html" class="active">random recipe </a></li>
+                <li><a href="favorites.html">the favorite</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h2> get a random recipe </h2>
+        
+        <div class="search-section">
+            <button id="random-recipe-button" class="action-button">random recipe </button>
+        </div>
+
+        <div id="loading-message" class="hidden">fetching recipe  ...</div>
+        <div id="error-message" class="hidden error"></div>
+
+        <section id="random-recipe-container" class="recipe-grid">
+            </section>
+    </main>
+    
+    <script src="app.js"></script>
+    <script>
+        // Start the random recipe logic once the DOM is loaded for this specific page
+        document.addEventListener('DOMContentLoaded', () => {
+            const randomButton = document.getElementById('random-recipe-button');
+            const recipeContainer = document.getElementById('random-recipe-container');
+            const loadingMessage = document.getElementById('loading-message');
+            const errorMessage = document.getElementById('error-message');
+
+            const setLoading = (loading = false, error = null) => {
+                loadingMessage.classList.toggle('hidden', !loading);
+                errorMessage.classList.toggle('hidden', !error);
+                errorMessage.textContent = error || '';
+            };
+
+            // (b) Function to fetch and display a random recipe
+            const fetchRandomRecipe = async () => {
+                recipeContainer.innerHTML = ''; // Clear previous recipe
+                setLoading(true); // Show loading message
+
+                try {
+                    // Fetch from our backend endpoint /recipes/random
+                    const response = await fetch('/recipes/random');
+                    const data = await response.json();
+
+                    setLoading(false); // Hide loading
+
+                    if (response.status !== 200) {
+                        setLoading(false, data.error || '      an unknown error occurred while retrieving the recipe.');
+                        return;
+                    }
+
+                    // The createRecipeCard function is globalized in app.js
+                    const recipeCard = window.createRecipeCard({
+                        ...data,
+                        // Add instructions/ingredients from the simplified JSON response
+                        instructions: data.instructions,
+                        ingredients: data.ingredients 
+                    }, false); // Set showSearchDetails to false
+                    
+                    recipeContainer.appendChild(recipeCard);
+
+                } catch (error) {
+                    console.error('Frontend Fetch Random Error:', error);
+                    setLoading(false, '    unable to connect to the server or retrieve the recipe.');
+                }
+            };
+
+            // Event listener for the random recipe button
+            if (randomButton) {
+                randomButton.addEventListener('click', fetchRandomRecipe);
+            }
+        });
+    </script>
+</body>
+</html>
