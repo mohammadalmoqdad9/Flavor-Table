@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flavor Table | search for recipes </title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <h1>Flavor Table</h1>
+            <ul>
+                <li><a href="index.html" class="active"> search for recipes </a></li>
+                <li><a href="randomRecipes.html"> random recipe</a></li>
+                <li><a href="favorites.html">favorites</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h2>search for recipes by ingredients</h2>
+        <div class="search-section">
+            <input type="text" id="ingredients-input" placeholder="chicken,rice,tomatoes">
+            <button id="search-button">search</button>
+        </div>
+        
+        <div id="loading-message" class="hidden">searching for recipes...</div>
+        <div id="error-message" class="hidden error"></div>
+
+        <section id="results-container" class="recipe-grid">
+            </section>
+    </main>
+    
+  
+    <script src="app.js"></script>
+
+
+
+
+
+
+    <div id="recipe-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <div id="modal-body">
+                <h3 id="detail-title"></h3>
+                <p><strong> preparation time:</strong> <span id="detail-summary"></span></p>
+                <p><strong>preparation time :</strong> <span id="detail-cooking-time"></span> minute</p>
+                <div id="detail-image-container"></div>
+                
+                <p class="loading-details hidden">  details are being gathered...</p>
+                <p class="error-details hidden error"></p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>
+</body>
+</html>
